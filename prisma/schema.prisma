@@ -4,12 +4,16 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
-  url      = 
+  provider = "sqlite"
+  url      = "story.db"
 }
 
-model Game {
-  id        String    @id @unique
-  user_id   String
-
+model Story {
+  id          String   @id @unique
+  createdAt   DateTime @default(now())
+  user_id     String   @default("none")
+  buyMilk     Boolean  @default(false)
+  milkInChai  Boolean  @default(false)
+  sugarinChai Boolean  @default(false)
+  visits      Int      @default(0)
 }

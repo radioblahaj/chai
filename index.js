@@ -31,7 +31,7 @@ let sugarLevel = 0; // Default
 app.message('chai', async ({ message, say }) => {
 
   const user = await app.client.users.info({ user: body.user.id })
-
+  await say(`${user}`)
   // then...
 
   // yes
