@@ -30,12 +30,15 @@ let sugarLevel = 0; // Default
 // Listens to incoming messages that contain "hello"
 app.message('chai', async ({ message, say }) => {
 
+try {
   const user = await app.client.users.info({ user: body.user.id })
   await say(`${user}`)
   // then...
 
   // yes
-
+} catch (e) {
+  await say(`${e}`)
+}
   
   if(milkInChai = false) {
     await say({text: "Do you want milk in your chai?", thread_ts: message.ts})
