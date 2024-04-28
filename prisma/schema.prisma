@@ -5,13 +5,13 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "story.db"
+  url      = "file:./story.db"
 }
 
 model Story {
   id          String   @id @unique
   createdAt   DateTime @default(now())
-  user_id     String   @default("none")
+  user_id     String?   @default("none")
   buyMilk     Boolean  @default(false)
   milkInChai  Boolean  @default(false)
   sugarinChai Boolean  @default(false)
