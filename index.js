@@ -53,11 +53,27 @@ const userID = command.user_id;
 
 });
 
-app.message("yes", async ({ message, say }) => {
-
-
-
-
+app.command('/reset-story', async ({ message, say, client, ack, command }) => {
+  await ack()
+  const userID = command.user_id;
+  try {
+    client.chat.postEphemeral({                          // <--- and here
+      token: process.env.SLACK_BOT_TOKEN,
+      channel: command.channel_id,
+      user: userID,
+      text: "Your story has been reset"
+    });
+  const updateUser = await prisma.story.update({
+    where: {
+      id: userID
+    },
+    data: {
+      visits: 0
+    },
+  })
+} catch (e) {
+  console.log(e)
+}
 })
 
 
