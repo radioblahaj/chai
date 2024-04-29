@@ -51,7 +51,7 @@ app.command('/start-story', async ({ message, say, client, ack, command }) => {
   client.chat.postMessage({                          // <--- and here
     token: process.env.SLACK_BOT_TOKEN,
     channel: command.channel_id,
-    text: `@<${command.user_id}> started a story!`
+    text: `<@${command.user_id}> started a story!`
   });
 
 
@@ -107,7 +107,6 @@ app.message('milk', async ({ message, say, client, body }) => {
 }
 
   await say({ text: "You added milk to your chai!", thread_ts: message.ts });
-
 
 
 });
