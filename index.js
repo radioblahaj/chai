@@ -32,12 +32,10 @@ const app = new App({
 app.command('/start-story', async ({ message, say, client, ack, command }) => {
   await ack();
 
-
   const userID = command.user_id;
 
   // let's see if this worksß
 
-  await say(`ID: ${userID}`)
   const user = await prisma.story.create({
     data: {
       buyMilk: false,
@@ -48,23 +46,38 @@ app.command('/start-story', async ({ message, say, client, ack, command }) => {
     },
   })
 
-  client.chat.postMessage({                          // <--- and here
-    token: process.env.SLACK_BOT_TOKEN,
-    channel: command.channel_id,
-    text: `<@${command.user_id}> started a story!`
-  });
-
-
-  // say() sends a message to the channel where the event was triggered
-
+  await say(`<@${command.user_id}> started a story`)
 });
+
+app.message('start', async ({ message, say, client, body }) => {
+  const userID = message.user;
+
+  await say("Thank you for visiting the cafe")
+
+
+  const user = await prisma.story.update({
+    where: {
+     id: userID 
+    },
+    data: {
+      visits: visits + 1
+    },
+  })
+
+})
+
+app.command('/make-coffee', async ({message, say, client, ack, command}) => {
+  const userID = command.user_id;
+
+  await say(`<@${userID}> asked me to make coffee! I'm just a teapot, I can't make coffee. **418**`)
+})
+
 
 app.command('/reset-story', async ({ message, say, client, ack, command }) => {
   await ack()
   const userID = command.user_id;
   try {
     client.chat.postEphemeral({                          // <--- and here
-      token: process.env.SLACK_BOT_TOKEN,
       channel: command.channel_id,
       user: userID,
       text: "Your story has been reset"
@@ -94,17 +107,17 @@ app.message('milk', async ({ message, say, client, body }) => {
   const userID = message.user
 
   try {
-  const addMilk = await prisma.story.update({
-    where: {
-      id: userID
-    },
-    data: {
-      milkInChai: true
-    },
-  })
-} catch(e) {
-  await say(e)
-}
+    const addMilk = await prisma.story.update({
+      where: {
+        id: userID
+      },
+      data: {
+        milkInChai: true
+      },
+    })
+  } catch (e) {
+    await say(e)
+  }
 
   await say({ text: "You added milk to your chai!", thread_ts: message.ts });
 
