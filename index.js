@@ -60,17 +60,20 @@ app.message('start', async ({ message, say, client, body }) => {
      id: userID 
     },
     data: {
-      visits: visits + 1
+      visits: 1
     },
   })
 
 })
 
 app.command('/make-coffee', async ({message, say, client, ack, command}) => {
+  await ack()
+
   const userID = command.user_id;
 
-  await say(`<@${userID}> asked me to make coffee! I'm just a teapot, I can't make coffee. **418**`)
+  await say(`<@${userID}> asked me to make coffee! I'm just a teapot, I can't make coffee. *418*`)
 })
+
 
 
 app.command('/reset-story', async ({ message, say, client, ack, command }) => {
@@ -101,18 +104,48 @@ app.command('/reset-story', async ({ message, say, client, ack, command }) => {
   }
 })
 
+app.message('brew', ({message, say, client, body}) => {
+
+  const userID = message.user;
+
+
+
+})
+
 
 app.message('milk', async ({ message, say, client, body }) => {
 
-  const userID = message.user
+  const userID = message.user;
 
+  const userData = await prisma.story.findUnique({
+    where: {
+      id: userID
+    }
+  })
+  switch (userData.milkInChai) {
+    case false:
+      const addMilk = await prisma.story.update({
+        where: {
+          id: userID
+        },
+        data: {
+          milkInChai: true,
+          visits: {increment: 1}
+        },
+      })
+      break;
+    case true:
+      await say("test")
+
+  }
   try {
     const addMilk = await prisma.story.update({
       where: {
         id: userID
       },
       data: {
-        milkInChai: true
+        milkInChai: true,
+        visits: {increment: 1}
       },
     })
   } catch (e) {
