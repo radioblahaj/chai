@@ -2,6 +2,7 @@ const { App, LogLevel } = require("@slack/bolt");
 require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const getData = require("./utils/getStory");
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -39,21 +40,7 @@ app.command("/start-story", async ({ message, say, client, ack, command }) => {
 
   await say(`<@${command.user_id}> started a story`);
 });
-
-app.message("start", async ({ message, say, client, body }) => {
-  const userID = message.user;
-
-  await say("Thank you for visiting the cafe");
-
-  const user = await prisma.story.update({
-    where: {
-      id: userID,
-    },
-    data: {
-      visits: 1,
-    },
-  });
-});
+ 
 
 app.command("/make-coffee", async ({ message, say, client, ack, command }) => {
   await ack();
@@ -94,9 +81,18 @@ app.command("/reset-story", async ({ message, say, client, ack, command }) => {
   }
 });
 
-app.message("brew", ({ message, say, client, body }) => {
+app.message("brew", async ({ message, say, client, body }) => {
   const userID = message.user;
-});
+
+  await getData(userID);
+
+  if (userData.milkInChai) {
+    await say("making chai, do you want to add milk?");
+  }
+  else {
+    await say("You need to add milk first")
+  }
+})
 
 app.message("milk", async ({ message, say, client, body }) => {
   const userID = message.user;
