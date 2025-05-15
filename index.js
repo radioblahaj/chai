@@ -20,11 +20,6 @@ const app = new App({
 
 // something like
 
-client.chat.postMessage({
-      channel: "C06T9MYV543",
-      text: "Your story has been reset",
-    });
-
 // Listens to incoming messages that contain "hello"
 app.command("/start-story", async ({ message, say, client, ack, command }) => {
   await ack();
